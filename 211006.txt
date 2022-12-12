@@ -1,0 +1,67 @@
+1) confusion matrix 를 직접 그리고 각 4가지
+파트에 대한 이해!!!
+2) accuracy : 정확도
+3)  precision -> 모델이 뭐라고 한 것 중에서!!!
+---> 스펨!!!
+4) recall -> 실제 상황 중에서!!!!!
+---> 암 진단!!!
+5) precision & recall--> 모두 볼 때 F1-score
+
+
+
+* ML에서 빵구난 데이터가 있을 때, 
+--> 지우거나 채워야 함
+
+.
+머신러닝!!
+1) 모델은 f(x)를 어떤 식으로 설정하느냐
+학습 f(x)를 선정했다면, 
+주어진 데이터를 바탕으로 에러가 적도록 하는 f(x)의 계수를 찾는 것.
+
+2) overfit, underfit 고민 해야함
+
+3) 피처에 대한 부분
+-> 어떻게 가공하고, 선택하는지 중요
+-> 내가 하고지 하는 데이터에 대한 이해가 중요
+---> 데이터 가공에 대한 코드를 원활하게. +시각화
+(titanic안보고 할수 있을 정도로 연습..)
+
+4) 관심있는 데이터가 무엇인지 찾아보는 것
+
+
+
+
+
+
+t1 = time.time()
+# 우리가 테스트할 k값들을 만들자...
+my_list = list(range(1,50))
+neighbors = filter(lambda x : x % 2 !=0, my_list)
+
+# k값에 따라서 여러가지로 나뉘서 모의고사 실전을 반복한 값들을 담기위해서...
+cv_scores = []
+
+# k값에 따라서 학습하고 단,  cv를 통해서 여러번 여기서는 10번 나눠서 한 부분.
+for k in neighbors:
+    knn = KNeighborsClassifier(n_neighbors=k , n_jobs=-1) # k값에 따라서 모델을 준비..
+    scores = cross_val_score(knn, train_data, train_labels,
+                             cv=10, scoring="accuracy")
+    cv_scores.append(scores.mean())
+    print(str(k)+":",scores.mean())
+
+#  정확도 97% --> 에러의 관점 3% ---> 100-97
+# k 값에 따라서 정확도...에러에...
+MSE = [ 1-x for x in cv_scores]
+
+# 최적의 k값은 언제? 에러의 관점으로는 에러가 제일 작을 떄의 k가 좋아요...
+optimal_k = neighbors[MSE.index(min(MSE))] 
+print("최적의 k :"+str(optimal_k))
+
+# k값에 따라서 에러에 대한 평균을 그래프로...
+plt.plot(neighbors, MSE) # 가로는 k값, 세로는 k일때의 에러의 평균값...
+plt.xlabel("k")
+plt.ylabel("Error Value")
+plt.show()
+
+t2 = time.time()
+print("Process Time  :" + str(t2-t1))
